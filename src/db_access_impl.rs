@@ -858,9 +858,41 @@ impl MySqlAccess {
 #[cfg(test)]
 mod test {
 
-    use crate::{db_access::SqlPreparedParams, sqls};
+    use crate::{SqlPreparedParams, MySqlAccess, MySqlAddr};
 
-    use super::{MySqlAccess, MySqlAddr};
+    mod sqls {
+        #[allow(dead_code)]
+        pub const SQL_INSERT_ZONE: &str = r#"
+            INSERT INTO `zone_config`(
+                `zone_id`,
+                `group_id`,
+                `gw_port`,
+                `http_port`,
+                `db_url`,
+                `redis_ip`,
+                `redis_port`,
+                `web_url`,
+                `test_blob`,
+                `test_timestamp`
+            ) 
+            VALUES(?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE 
+                `group_id`=?,
+                `gw_port`=?,
+                `http_port`=?,
+                `db_url`=?,
+                `redis_ip`=?,
+                `redis_port`=?,
+                `web_url`=?,
+                `test_blob`=?,
+                `test_timestamp`=?
+        "#;
+
+        #[allow(dead_code)]
+        pub const SQL_QUERY_ZONE: &str = r#"SELECT * FROM `zone_config` WHERE zone_id=?"#;
+
+        #[allow(dead_code)]
+        pub const SQL_QUERY_ZONE_ALL: &str = r#"SELECT * FROM `zone_config`"#;
+    }
 
     #[test]
     fn msyql_query() {
@@ -917,7 +949,7 @@ mod test {
             params.add_blob("blablabla".as_bytes().to_vec());
             params.add_timestamp(1703830842, 0);
 
-            params
+            Some(params)
         });
         assert!(ret.is_ok());
     }
