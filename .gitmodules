@@ -1,6 +1,3 @@
-[submodule "rust-hex"]
-	path = rust-hex
-	url = https://github.com/nneesshh/rust-hex
 [submodule "iso8601-duration"]
 	path = iso8601-duration
 	url = https://github.com/nneesshh/iso8601-duration
